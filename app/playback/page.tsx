@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
 import paper from "paper";
@@ -11,7 +11,7 @@ import Button from "../_components/Button";
 import SocialShareButton from "../_components/SocialShareButton";
 import { COLORS, PLAYBACK_CONFIG } from "../_constants/theme";
 
-export default function PlaybackPage() {
+function PlaybackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { chordSequence, resetChords, addChord } = useChordProgression();
@@ -238,5 +238,13 @@ export default function PlaybackPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function PlaybackPage() {
+  return (
+    <Suspense fallback={<div className="w-screen h-screen bg-black" />}>
+      <PlaybackContent />
+    </Suspense>
   );
 }
