@@ -1,0 +1,134 @@
+{
+  "name": "Blues",
+  "description": "12小節ブルース進行を基調とし、I7-IV7-V7のドミナント7th連続とブルーノートを多用。\nbVII7やbIII7などの借用和音も活用した、グルーヴ感のある泥臭い和声進行",
+  "nodes": [
+    { "id": "I" },
+    { "id": "I7" },
+    { "id": "I6" },
+    { "id": "I9" },
+    { "id": "vi" },
+    { "id": "vi7" },
+    { "id": "iii" },
+    { "id": "iii7" },
+    { "id": "IV" },
+    { "id": "IV7" },
+    { "id": "IV6" },
+    { "id": "ii" },
+    { "id": "ii7" },
+    { "id": "ii6" },
+    { "id": "ii9" },
+    { "id": "V" },
+    { "id": "V7" },
+    { "id": "V9" },
+    { "id": "vii°" },
+    { "id": "viiø7" },
+    { "id": "bVII7" },
+    { "id": "bIII7" }
+  ],
+  "links": [
+    { "source": "I", "target": "IV", "weight": 0.50 },
+    { "source": "I", "target": "V", "weight": 0.30 },
+    { "source": "I", "target": "ii", "weight": 0.15 },
+    { "source": "I", "target": "vi", "weight": 0.05 },
+
+    { "source": "I6", "target": "IV6", "weight": 0.50 },
+    { "source": "I6", "target": "V7", "weight": 0.35 },
+    { "source": "I6", "target": "ii7", "weight": 0.15 },
+
+    { "source": "vi", "target": "ii", "weight": 0.35 },
+    { "source": "vi", "target": "IV", "weight": 0.30 },
+    { "source": "vi", "target": "V", "weight": 0.25 },
+    { "source": "vi", "target": "I", "weight": 0.10 },
+
+    { "source": "vi7", "target": "ii7", "weight": 0.35 },
+    { "source": "vi7", "target": "V7", "weight": 0.30 },
+    { "source": "vi7", "target": "I6", "weight": 0.20 },
+    { "source": "vi7", "target": "IV6", "weight": 0.15 },
+
+    { "source": "iii", "target": "vi", "weight": 0.35 },
+    { "source": "iii", "target": "IV", "weight": 0.30 },
+    { "source": "iii", "target": "I", "weight": 0.20 },
+    { "source": "iii", "target": "ii", "weight": 0.15 },
+
+    { "source": "iii7", "target": "vi7", "weight": 0.35 },
+    { "source": "iii7", "target": "ii7", "weight": 0.30 },
+    { "source": "iii7", "target": "V7", "weight": 0.20 },
+    { "source": "iii7", "target": "I6", "weight": 0.15 },
+
+    { "source": "IV", "target": "I", "weight": 0.45 },
+    { "source": "IV", "target": "V", "weight": 0.35 },
+    { "source": "IV", "target": "ii", "weight": 0.20 },
+
+    { "source": "IV6", "target": "I6", "weight": 0.45 },
+    { "source": "IV6", "target": "V7", "weight": 0.35 },
+    { "source": "IV6", "target": "ii7", "weight": 0.20 },
+
+    { "source": "ii", "target": "V", "weight": 0.50 },
+    { "source": "ii", "target": "I", "weight": 0.25 },
+    { "source": "ii", "target": "IV", "weight": 0.15 },
+    { "source": "ii", "target": "vi", "weight": 0.10 },
+
+    { "source": "ii7", "target": "V7", "weight": 0.50 },
+    { "source": "ii7", "target": "I6", "weight": 0.25 },
+    { "source": "ii7", "target": "IV6", "weight": 0.15 },
+    { "source": "ii7", "target": "vi7", "weight": 0.10 },
+
+    { "source": "V", "target": "I", "weight": 0.50 },
+    { "source": "V", "target": "IV", "weight": 0.40 },
+    { "source": "V", "target": "ii", "weight": 0.10 },
+
+    { "source": "V7", "target": "I6", "weight": 0.50 },
+    { "source": "V7", "target": "IV6", "weight": 0.40 },
+    { "source": "V7", "target": "ii7", "weight": 0.10 },
+
+    { "source": "vii°", "target": "I", "weight": 0.50 },
+    { "source": "vii°", "target": "iii", "weight": 0.25 },
+    { "source": "vii°", "target": "V", "weight": 0.15 },
+    { "source": "vii°", "target": "vi", "weight": 0.10 },
+
+    { "source": "viiø7", "target": "I6", "weight": 0.45 },
+    { "source": "viiø7", "target": "iii7", "weight": 0.30 },
+    { "source": "viiø7", "target": "V7", "weight": 0.15 },
+    { "source": "viiø7", "target": "vi7", "weight": 0.10 },
+
+    { "source": "I7", "target": "IV7", "weight": 0.35 },
+    { "source": "I7", "target": "V7", "weight": 0.30 },
+    { "source": "I7", "target": "ii7", "weight": 0.20 },
+    { "source": "I7", "target": "vi7", "weight": 0.10 },
+
+    { "source": "I9", "target": "IV7", "weight": 0.40 },
+    { "source": "I9", "target": "V7", "weight": 0.30 },
+    { "source": "I9", "target": "ii7", "weight": 0.20 },
+    { "source": "I9", "target": "vi7", "weight": 0.10 },
+
+    { "source": "IV7", "target": "I7", "weight": 0.40 },
+    { "source": "IV7", "target": "V7", "weight": 0.35 },
+    { "source": "IV7", "target": "ii7", "weight": 0.20 },
+
+    { "source": "ii6", "target": "V7", "weight": 0.50 },
+    { "source": "ii6", "target": "I6", "weight": 0.25 },
+    { "source": "ii6", "target": "IV6", "weight": 0.15 },
+    { "source": "ii6", "target": "vi7", "weight": 0.10 },
+
+    { "source": "ii9", "target": "V7", "weight": 0.50 },
+    { "source": "ii9", "target": "I6", "weight": 0.25 },
+    { "source": "ii9", "target": "IV7", "weight": 0.15 },
+    { "source": "ii9", "target": "vi7", "weight": 0.10 },
+
+    { "source": "V9", "target": "I6", "weight": 0.40 },
+    { "source": "V9", "target": "IV6", "weight": 0.35 },
+    { "source": "V9", "target": "V7", "weight": 0.15 },
+    { "source": "V9", "target": "ii7", "weight": 0.10 },
+
+    { "source": "bVII7", "target": "IV7", "weight": 0.40 },
+    { "source": "bVII7", "target": "I7", "weight": 0.35 },
+    { "source": "bVII7", "target": "V7", "weight": 0.25 },
+
+    { "source": "bIII7", "target": "ii7", "weight": 0.40 },
+    { "source": "bIII7", "target": "V7", "weight": 0.35 },
+    { "source": "bIII7", "target": "I7", "weight": 0.25 },
+
+    { "source": "I7", "target": "bVII7", "weight": 0.05 },
+    { "source": "IV7", "target": "bIII7", "weight": 0.05 }
+  ]
+}

@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: hsla(0, 0%, 14%, 1);
+  --foreground: hsla(0, 0%, 100%, 1);
+}
+
+html {
+  /* iPhone全画面表示 */
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  overflow: hidden;
+  /* iOS SafeAreaのパディング */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  /* 全画面表示 */
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  overflow: hidden;
+  /* スクロール防止 */
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  /* iOS Safari のバウンス防止 */
+  overscroll-behavior: none;
+}

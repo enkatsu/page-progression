@@ -1,0 +1,148 @@
+{
+  "name": "Jazz",
+  "description": "ii-V-I進行とI-vi-ii-Vターンアラウンドを軸にしたジャズスタイル。\nmaj7や9thなどのテンションコードを多用し、viiø7などの代理コードも活用した洗練された和声進行。\n特にii9-V9-I9の流れを重視",
+  "nodes": [
+    { "id": "I7" },
+    { "id": "Imaj7" },
+    { "id": "I6" },
+    { "id": "I9" },
+    { "id": "vi" },
+    { "id": "vi7" },
+    { "id": "vi9" },
+    { "id": "iii" },
+    { "id": "iii7" },
+    { "id": "iii9" },
+    { "id": "IV7" },
+    { "id": "IVmaj7" },
+    { "id": "IV6" },
+    { "id": "IVmaj9" },
+    { "id": "ii" },
+    { "id": "ii7" },
+    { "id": "ii6" },
+    { "id": "ii9" },
+    { "id": "V" },
+    { "id": "V7" },
+    { "id": "V9" },
+    { "id": "vii°" },
+    { "id": "viiø7" }
+  ],
+  "links": [
+    { "source": "Imaj7", "target": "vi7", "weight": 0.25 },
+    { "source": "Imaj7", "target": "vi9", "weight": 0.20 },
+    { "source": "Imaj7", "target": "ii7", "weight": 0.20 },
+    { "source": "Imaj7", "target": "ii9", "weight": 0.15 },
+    { "source": "Imaj7", "target": "iii7", "weight": 0.10 },
+    { "source": "Imaj7", "target": "iii9", "weight": 0.05 },
+    { "source": "Imaj7", "target": "IVmaj7", "weight": 0.05 },
+
+    { "source": "I6", "target": "vi7", "weight": 0.40 },
+    { "source": "I6", "target": "vi9", "weight": 0.20 },
+    { "source": "I6", "target": "ii7", "weight": 0.25 },
+    { "source": "I6", "target": "IVmaj7", "weight": 0.15 },
+
+    { "source": "I7", "target": "IV7", "weight": 0.50 },
+    { "source": "I7", "target": "V7", "weight": 0.30 },
+    { "source": "I7", "target": "vi7", "weight": 0.15 },
+    { "source": "I7", "target": "ii7", "weight": 0.05 },
+
+    { "source": "I9", "target": "vi9", "weight": 0.30 },
+    { "source": "I9", "target": "vi7", "weight": 0.25 },
+    { "source": "I9", "target": "ii9", "weight": 0.20 },
+    { "source": "I9", "target": "IVmaj9", "weight": 0.15 },
+    { "source": "I9", "target": "iii9", "weight": 0.10 },
+
+    { "source": "vi", "target": "ii7", "weight": 0.45 },
+    { "source": "vi", "target": "ii9", "weight": 0.15 },
+    { "source": "vi", "target": "ii", "weight": 0.30 },
+    { "source": "vi", "target": "IV", "weight": 0.10 },
+
+    { "source": "vi7", "target": "ii7", "weight": 0.50 },
+    { "source": "vi7", "target": "ii9", "weight": 0.30 },
+    { "source": "vi7", "target": "ii", "weight": 0.15 },
+    { "source": "vi7", "target": "IVmaj7", "weight": 0.05 },
+
+    { "source": "vi9", "target": "ii9", "weight": 0.50 },
+    { "source": "vi9", "target": "ii7", "weight": 0.35 },
+    { "source": "vi9", "target": "IVmaj9", "weight": 0.15 },
+
+    { "source": "iii", "target": "vi7", "weight": 0.40 },
+    { "source": "iii", "target": "vi9", "weight": 0.15 },
+    { "source": "iii", "target": "vi", "weight": 0.30 },
+    { "source": "iii", "target": "ii7", "weight": 0.10 },
+    { "source": "iii", "target": "IV", "weight": 0.05 },
+
+    { "source": "iii7", "target": "vi7", "weight": 0.40 },
+    { "source": "iii7", "target": "vi9", "weight": 0.20 },
+    { "source": "iii7", "target": "ii7", "weight": 0.15 },
+    { "source": "iii7", "target": "iii9", "weight": 0.10 },
+    { "source": "iii7", "target": "IVmaj7", "weight": 0.15 },
+
+    { "source": "iii9", "target": "vi9", "weight": 0.45 },
+    { "source": "iii9", "target": "vi7", "weight": 0.30 },
+    { "source": "iii9", "target": "ii9", "weight": 0.25 },
+
+    { "source": "IV7", "target": "I7", "weight": 0.40 },
+    { "source": "IV7", "target": "V7", "weight": 0.35 },
+    { "source": "IV7", "target": "Imaj7", "weight": 0.15 },
+    { "source": "IV7", "target": "ii7", "weight": 0.10 },
+
+    { "source": "IVmaj7", "target": "V7", "weight": 0.50 },
+    { "source": "IVmaj7", "target": "V9", "weight": 0.15 },
+    { "source": "IVmaj7", "target": "viiø7", "weight": 0.15 },
+    { "source": "IVmaj7", "target": "Imaj7", "weight": 0.15 },
+    { "source": "IVmaj7", "target": "iii7", "weight": 0.05 },
+
+    { "source": "IV6", "target": "V7", "weight": 0.45 },
+    { "source": "IV6", "target": "IVmaj7", "weight": 0.25 },
+    { "source": "IV6", "target": "Imaj7", "weight": 0.15 },
+    { "source": "IV6", "target": "V9", "weight": 0.10 },
+    { "source": "IV6", "target": "iii7", "weight": 0.05 },
+
+    { "source": "IVmaj9", "target": "V9", "weight": 0.50 },
+    { "source": "IVmaj9", "target": "V7", "weight": 0.30 },
+    { "source": "IVmaj9", "target": "viiø7", "weight": 0.15 },
+    { "source": "IVmaj9", "target": "I9", "weight": 0.05 },
+
+    { "source": "ii", "target": "V7", "weight": 0.60 },
+    { "source": "ii", "target": "V9", "weight": 0.15 },
+    { "source": "ii", "target": "V", "weight": 0.20 },
+    { "source": "ii", "target": "vii°", "weight": 0.05 },
+
+    { "source": "ii7", "target": "V7", "weight": 0.60 },
+    { "source": "ii7", "target": "V9", "weight": 0.30 },
+    { "source": "ii7", "target": "viiø7", "weight": 0.10 },
+
+    { "source": "ii6", "target": "V7", "weight": 0.60 },
+    { "source": "ii6", "target": "V9", "weight": 0.25 },
+    { "source": "ii6", "target": "V", "weight": 0.15 },
+
+    { "source": "ii9", "target": "V9", "weight": 0.70 },
+    { "source": "ii9", "target": "V7", "weight": 0.25 },
+    { "source": "ii9", "target": "viiø7", "weight": 0.05 },
+
+    { "source": "V", "target": "Imaj7", "weight": 0.50 },
+    { "source": "V", "target": "I9", "weight": 0.20 },
+    { "source": "V", "target": "vi7", "weight": 0.20 },
+    { "source": "V", "target": "vi", "weight": 0.10 },
+
+    { "source": "V7", "target": "Imaj7", "weight": 0.40 },
+    { "source": "V7", "target": "I6", "weight": 0.20 },
+    { "source": "V7", "target": "I9", "weight": 0.20 },
+    { "source": "V7", "target": "vi7", "weight": 0.20 },
+
+    { "source": "V9", "target": "I9", "weight": 0.40 },
+    { "source": "V9", "target": "Imaj7", "weight": 0.30 },
+    { "source": "V9", "target": "I6", "weight": 0.15 },
+    { "source": "V9", "target": "vi9", "weight": 0.15 },
+
+    { "source": "vii°", "target": "Imaj7", "weight": 0.50 },
+    { "source": "vii°", "target": "I9", "weight": 0.20 },
+    { "source": "vii°", "target": "iii7", "weight": 0.20 },
+    { "source": "vii°", "target": "vi7", "weight": 0.10 },
+
+    { "source": "viiø7", "target": "Imaj7", "weight": 0.50 },
+    { "source": "viiø7", "target": "I9", "weight": 0.20 },
+    { "source": "viiø7", "target": "iii7", "weight": 0.20 },
+    { "source": "viiø7", "target": "vi7", "weight": 0.10 }
+  ]
+}
