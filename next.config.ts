@@ -1,35 +1,24 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   output: 'export',
   webpack: (config, { isServer }) => {
-    console.log('=== Webpack Config Debug ===');
-    console.log('isServer:', isServer);
-    console.log('Original mainFields:', config.resolve.mainFields);
-    console.log('Original alias:', config.resolve.alias?.['paper']);
-
     if (isServer) {
       // サーバーサイドでは paper を完全に無効化
       config.resolve.alias = {
         ...config.resolve.alias,
-        'paper': false,
+        paper: false,
       };
     } else {
-      // クライアントサイドでは browser フィールドを優先し、
-      // paper のエントリポイントを paper-core.js に変更
+      // クライアントサイドでは paper を paper-core.js に置き換え
+      // 絶対パスで指定して確実に解決
+      const paperCorePath = path.resolve(process.cwd(), 'node_modules/paper/dist/paper-core.js');
+
       config.resolve.alias = {
         ...config.resolve.alias,
-        'paper$': 'paper/dist/paper-core.js',
+        paper: paperCorePath,
       };
-
-      // browser フィールドを優先的に使用（既存の設定を保持）
-      const currentMainFields = config.resolve.mainFields || [];
-      if (!currentMainFields.includes('browser')) {
-        config.resolve.mainFields = ['browser', ...currentMainFields];
-      }
-
-      console.log('Updated mainFields:', config.resolve.mainFields);
-      console.log('Updated alias:', config.resolve.alias?.['paper$']);
     }
 
     return config;
