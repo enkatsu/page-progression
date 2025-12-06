@@ -1,21 +1,23 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
+    // Paper.js の Node.js 専用モジュールを無効化
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      // サーバーサイドでは paper を完全に無効化
+      ...(isServer && { 'paper': false }),
+    };
+
+    // NormalModuleReplacementPlugin で paper-full を paper-core に置き換え
     if (!isServer) {
-      // クライアントサイドでは paper を paper-core.js に置き換え
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'paper': path.resolve('./node_modules/paper/dist/paper-core.js'),
-      };
-    } else {
-      // サーバーサイドでは paper を無効化
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'paper': false,
-      };
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /^paper$/,
+          'paper/dist/paper-core.js'
+        )
+      );
     }
 
     return config;
