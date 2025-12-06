@@ -22,8 +22,11 @@ const nextConfig: NextConfig = {
         'paper$': 'paper/dist/paper-core.js',
       };
 
-      // browser フィールドを優先的に使用
-      config.resolve.mainFields = ['browser', 'module', 'main'];
+      // browser フィールドを優先的に使用（既存の設定を保持）
+      const currentMainFields = config.resolve.mainFields || [];
+      if (!currentMainFields.includes('browser')) {
+        config.resolve.mainFields = ['browser', ...currentMainFields];
+      }
 
       console.log('Updated mainFields:', config.resolve.mainFields);
       console.log('Updated alias:', config.resolve.alias?.['paper$']);
