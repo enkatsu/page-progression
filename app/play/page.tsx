@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import paper from "paper";
 import { Blob } from "../_lib/Blob";
 import { ChordProgressionManager } from "../_lib/ChordProgressionManager";
+import { BlobPositioner } from "../_lib/BlobPositioner";
+import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
 import jazzData from "../_data/jazz.json";
 import { COLORS, BLOB_CONFIG, BLOB_MARGIN } from "../_constants/theme";
@@ -24,6 +26,26 @@ export default function PlayPage() {
   const chordManagerRef = useRef<ChordProgressionManager>(initialChordManager);
   const createBlobsRef = useRef<((options: NextChordOption[], expandingBlob?: Blob) => void) | null>(null);
 
+  // Blobタップ時の処理
+  const handleBlobTap = useCallback((option: NextChordOption, blob: Blob) => {
+    blob.startExpanding(() => {
+      // 拡大完了時の処理
+      const chordManager = chordManagerRef.current;
+
+      // コード進行を更新
+      chordManager.transitionTo(option.chord);
+      setCurrentChord(option.chord);
+      addChord(option.chord);
+      setTapCount((prev) => prev + 1);
+
+      // 新しい次の候補を取得してBlobを更新
+      const newNextChordOptions = chordManager.getNextChordOptions();
+      if (createBlobsRef.current) {
+        createBlobsRef.current(newNextChordOptions, blob);
+      }
+    });
+  }, [setCurrentChord, setTapCount, addChord]);
+
   // Blobを作成する関数
   const createBlobs = useCallback((nextChordOptions: NextChordOption[], expandingBlob?: Blob) => {
     // 既存のBlobを削除（拡大中のBlobは除く）
@@ -36,54 +58,23 @@ export default function PlayPage() {
     const width = paper.view.viewSize.width;
     const height = paper.view.viewSize.height;
 
+    // BlobPositionerを使用して位置管理
+    const positioner = new BlobPositioner(width, height, BLOB_MARGIN);
+
     // Blobの半径は遷移確率（重み）に基づいて決定
     const minRadius = BLOB_CONFIG.minRadius;
     const maxRadius = BLOB_CONFIG.maxRadius;
-    const margin = BLOB_MARGIN;
 
     const blobs: Blob[] = [];
-    const positions: { x: number; y: number; radius: number }[] = [];
-
-    // 他のBlobと重ならない位置を見つける関数
-    const findNonOverlappingPosition = (radius: number, maxAttempts = 50): { x: number; y: number } => {
-      for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        const x = Math.random() * (width - margin * 2) + margin;
-        const y = Math.random() * (height - margin * 2) + margin;
-
-        // 他のBlobとの距離をチェック
-        let isOverlapping = false;
-        for (const pos of positions) {
-          const dx = x - pos.x;
-          const dy = y - pos.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const minDistance = radius + pos.radius + 30; // 30pxの余白
-
-          if (distance < minDistance) {
-            isOverlapping = true;
-            break;
-          }
-        }
-
-        if (!isOverlapping) {
-          return { x, y };
-        }
-      }
-
-      // 最大試行回数を超えた場合は、最後の位置を返す
-      return {
-        x: Math.random() * (width - margin * 2) + margin,
-        y: Math.random() * (height - margin * 2) + margin,
-      };
-    };
 
     // 各次コード候補をBlobとして配置
     nextChordOptions.forEach((option, i) => {
       // 重みに基づいて半径を決定（重みが大きいほど大きいBlob）
       const radius = minRadius + (option.weight * (maxRadius - minRadius));
-      const { x, y } = findNonOverlappingPosition(radius);
+      const { x, y } = positioner.findNonOverlappingPosition(radius);
 
       // 位置を記録
-      positions.push({ x, y, radius });
+      positioner.addPosition(x, y, radius);
 
       const blob = new Blob({
         x,
@@ -93,27 +84,7 @@ export default function PlayPage() {
         canvasWidth: width,
         canvasHeight: height,
         label: option.chord,
-        onTap: () => {
-          // タップされたBlobを拡大アニメーション開始（拡大完了後のコールバックを設定）
-          blob.startExpanding(() => {
-            // 拡大完了時の処理
-            // 1. コード進行を更新
-            const chordManager = chordManagerRef.current;
-            chordManager.transitionTo(option.chord);
-            setCurrentChord(option.chord);
-            addChord(option.chord); // コード列に追加
-            setTapCount((prev) => prev + 1);
-
-            // 2. 新しい次の候補を取得してBlobを更新（選択Blob以外を削除、新規Blobを追加）
-            const newNextChordOptions = chordManager.getNextChordOptions();
-            if (createBlobsRef.current) {
-              createBlobsRef.current(newNextChordOptions, blob);
-            }
-
-            // 3. フェードアウトは自動的に開始される（Blob.tsで制御）
-            // 4. フェードアウト完了後、Blobは自動削除される（Blob.tsで制御）
-          });
-        },
+        onTap: () => handleBlobTap(option, blob),
         gravity: 0,
       });
       blobs.push(blob);
@@ -137,12 +108,8 @@ export default function PlayPage() {
 
     const canvas = canvasRef.current;
 
-    // canvasのサイズをウィンドウサイズに合わせる
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
     // Paper.jsのセットアップ
-    paper.setup(canvas);
+    setupPaperCanvas(canvas);
 
     // コード進行マネージャーを取得
     const chordManager = chordManagerRef.current;
@@ -171,9 +138,7 @@ export default function PlayPage() {
     return () => {
       // クリーンアップ
       blobsRef.current.forEach((blob) => blob.remove());
-      if (paper.project) {
-        paper.project.clear();
-      }
+      cleanupPaperCanvas();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

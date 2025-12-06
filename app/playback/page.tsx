@@ -6,6 +6,7 @@ import { useChordProgression } from "../_contexts/ChordProgressionContext";
 import paper from "paper";
 import { Blob } from "../_lib/Blob";
 import { ChordPlayer } from "../_lib/ChordPlayer";
+import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
 import Button from "../_components/Button";
 import SocialShareButton from "../_components/SocialShareButton";
 import { COLORS, PLAYBACK_CONFIG } from "../_constants/theme";
@@ -59,18 +60,8 @@ export default function PlaybackPage() {
 
     const canvas = canvasRef.current;
 
-    // canvasのサイズをウィンドウサイズに合わせる
-    // iPhoneの実際の表示領域を取得（visualViewport使用）
-    const vw = window.visualViewport?.width || window.innerWidth;
-    const vh = window.visualViewport?.height || window.innerHeight;
-    canvas.width = vw;
-    canvas.height = vh;
-
-    // Paper.jsのセットアップ
-    paper.setup(canvas);
-
-    const width = paper.view.viewSize.width;
-    const height = paper.view.viewSize.height;
+    // Paper.jsのセットアップ（visualViewport使用）
+    const { width, height } = setupPaperCanvas(canvas, true);
 
     // ChordPlayerを作成（初回のみ）
     if (!chordPlayerRef.current) {
@@ -169,9 +160,7 @@ export default function PlaybackPage() {
       }
       // Blobを削除
       blobs.forEach((blob) => blob.remove());
-      if (paper.project) {
-        paper.project.clear();
-      }
+      cleanupPaperCanvas();
       // ChordPlayerは破棄しない（再利用する）
     };
   }, [chordSequence, router, searchParams, showStartPrompt]);
