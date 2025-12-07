@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   output: 'export',
   webpack: (config, { isServer }) => {
     console.log('🔧 Webpack config - isServer:', isServer);
@@ -32,4 +33,4 @@ const nextConfig = {
   turbopack: {},
 };
 
-module.exports = nextConfig;
+export default nextConfig;
