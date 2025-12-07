@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
-import paper from "paper";
+import paper from "paper/dist/paper-core";
 import { Blob } from "../_lib/Blob";
 import { ChordPlayer } from "../_lib/ChordPlayer";
 import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
