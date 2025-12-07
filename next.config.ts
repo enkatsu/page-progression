@@ -13,6 +13,19 @@ const nextConfig: NextConfig = {
       };
     } else {
       console.log('🔧 Client-side build - paper will use paper/dist/paper-core');
+      // クライアント側でもNode.js依存モジュールを無効化
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        canvas: false,
+        jsdom: false,
+        fs: false,
+      };
+      // paper/dist/node配下のモジュールも無効化
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'paper/dist/node/canvas': false,
+        'paper/dist/node/self': false,
+      };
     }
 
     return config;
