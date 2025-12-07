@@ -1,4 +1,4 @@
-import paper from "paper/dist/paper-core";
+import paper from "paper";
 import { BlobConfig } from "../_types/BlobConfig";
 import { BLOB_CONFIG } from "../_constants/theme";
 

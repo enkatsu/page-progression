@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import paper from "paper/dist/paper-core";
+import paper from "paper";
 import { Blob } from "../_lib/Blob";
 import { ChordProgressionManager } from "../_lib/ChordProgressionManager";
 import { BlobPositioner } from "../_lib/BlobPositioner";
