@@ -96,7 +96,7 @@ export default function PlayPageContent() {
     }
 
     blobsRef.current = blobs;
-  }, [setCurrentChord, setTapCount, addChord]);
+  }, [handleBlobTap]);
 
   // createBlobsをrefに保存
   useEffect(() => {
