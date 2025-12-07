@@ -20,11 +20,11 @@ export default function PlayPageContent() {
   const router = useRouter();
   const { addChord, resetChords } = useChordProgression();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [tapCount, setTapCount] = useState(0);
   const [currentChord, setCurrentChord] = useState<string>(initialChord);
   const blobsRef = useRef<Blob[]>([]);
   const chordManagerRef = useRef<ChordProgressionManager>(initialChordManager);
   const createBlobsRef = useRef<((options: NextChordOption[], expandingBlob?: Blob) => void) | null>(null);
+  const tapCountRef = useRef<number>(0);
 
   // Blobタップ時の処理
   const handleBlobTap = useCallback((option: NextChordOption, blob: Blob) => {
@@ -36,7 +36,15 @@ export default function PlayPageContent() {
       chordManager.transitionTo(option.chord);
       setCurrentChord(option.chord);
       addChord(option.chord);
-      setTapCount((prev) => prev + 1);
+
+      const newTapCount = tapCountRef.current + 1;
+      tapCountRef.current = newTapCount;
+
+      // 最大タップ回数に達した場合は遷移
+      if (newTapCount === 8) {
+        router.push("/playback");
+        return;
+      }
 
       // 新しい次の候補を取得してBlobを更新
       const newNextChordOptions = chordManager.getNextChordOptions();
@@ -44,7 +52,7 @@ export default function PlayPageContent() {
         createBlobsRef.current(newNextChordOptions, blob);
       }
     });
-  }, [setCurrentChord, setTapCount, addChord]);
+  }, [router, addChord]);
 
   // Blobを作成する関数
   const createBlobs = useCallback((nextChordOptions: NextChordOption[], expandingBlob?: Blob) => {
@@ -143,12 +151,6 @@ export default function PlayPageContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // タップ回数が3回になったらplayback画面に遷移
-  useEffect(() => {
-    if (tapCount === 8) {
-      router.push("/playback");
-    }
-  }, [tapCount, router]);
 
   return (
     <main className="w-screen h-screen overflow-hidden">

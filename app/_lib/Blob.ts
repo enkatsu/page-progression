@@ -77,19 +77,35 @@ export class Blob {
 
     // タップイベント（PathとLabelの両方に設定）
     this.path.onMouseDown = () => {
+      // 拡大中またはフェードアウト中はクリックを無視
+      if (this.isExpanding || this.isFadingOut) {
+        return;
+      }
       config.onTap();
     };
 
     this.label.onMouseDown = () => {
+      // 拡大中またはフェードアウト中はクリックを無視
+      if (this.isExpanding || this.isFadingOut) {
+        return;
+      }
       config.onTap();
     };
 
     // マウスオーバーでカーソルをポインターに（PathとLabelの両方に設定）
     this.path.onMouseEnter = () => {
+      // 拡大中またはフェードアウト中はカーソルを変更しない
+      if (this.isExpanding || this.isFadingOut) {
+        return;
+      }
       document.body.style.cursor = 'pointer';
     };
 
     this.label.onMouseEnter = () => {
+      // 拡大中またはフェードアウト中はカーソルを変更しない
+      if (this.isExpanding || this.isFadingOut) {
+        return;
+      }
       document.body.style.cursor = 'pointer';
     };
 
