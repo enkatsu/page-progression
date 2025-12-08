@@ -41,7 +41,7 @@ export default function PlayPageContent() {
       tapCountRef.current = newTapCount;
 
       // 最大タップ回数に達した場合は遷移
-      if (newTapCount === 8) {
+      if (newTapCount === 2) {
         router.push("/playback");
         return;
       }
