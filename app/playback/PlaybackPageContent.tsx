@@ -185,10 +185,19 @@ export default function PlaybackPageContent() {
     router.push("/start");
   };
 
-  const handleShare = async () => {
-    // コード進行をカンマ区切りでエンコード
+  const getShareUrl = () => {
     const chordsParam = chordSequence.join(",");
-    const shareUrl = `${window.location.origin}/playback?chords=${encodeURIComponent(chordsParam)}`;
+    return `${window.location.origin}/playback?chords=${encodeURIComponent(chordsParam)}`;
+  };
+
+  const handleReplay = () => {
+    // シェア用URLを開く（現在のコード進行を再生）
+    const shareUrl = getShareUrl();
+    window.location.href = shareUrl;
+  };
+
+  const handleShare = async () => {
+    const shareUrl = getShareUrl();
 
     try {
       // Web Share APIが使える場合
@@ -234,7 +243,7 @@ export default function PlaybackPageContent() {
             <div className="grid grid-cols-2 gap-4 mb-4">
               {/* サウンドをもう一度聞くボタン */}
               <button
-                onClick={() => window.location.reload()}
+                onClick={handleReplay}
                 className="bg-white flex flex-col items-center justify-center gap-2 rounded-2xl p-6 transition-colors"
               >
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
