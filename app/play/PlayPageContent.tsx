@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import paper from "paper";
 import { Blob } from "../_lib/Blob";
@@ -18,9 +18,8 @@ const initialChord = initialChordManager.getCurrentChord();
 
 export default function PlayPageContent() {
   const router = useRouter();
-  const { addChord, resetChords } = useChordProgression();
+  const { addChord, resetChords, chordSequence } = useChordProgression();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [currentChord, setCurrentChord] = useState<string>(initialChord);
   const blobsRef = useRef<Blob[]>([]);
   const chordManagerRef = useRef<ChordProgressionManager>(initialChordManager);
   const createBlobsRef = useRef<((options: NextChordOption[], expandingBlob?: Blob) => void) | null>(null);
@@ -34,14 +33,13 @@ export default function PlayPageContent() {
 
       // コード進行を更新
       chordManager.transitionTo(option.chord);
-      setCurrentChord(option.chord);
       addChord(option.chord);
 
       const newTapCount = tapCountRef.current + 1;
       tapCountRef.current = newTapCount;
 
       // 最大タップ回数に達した場合は遷移
-      if (newTapCount === 2) {
+      if (newTapCount === 7) {
         router.push("/playback");
         return;
       }
@@ -154,8 +152,15 @@ export default function PlayPageContent() {
 
   return (
     <main className="w-screen h-screen overflow-hidden">
-      <div className="absolute top-4 left-4 text-2xl font-bold text-white z-10">
-        {currentChord}
+      <div className="absolute top-4 left-4 right-4 text-2xl font-bold text-white z-10">
+        <div className="flex items-center gap-2 flex-wrap">
+          {chordSequence.map((chord, index) => (
+            <span key={index} className={index === chordSequence.length - 1 ? "text-white" : "text-white/50"}>
+              {chord}
+              {index < chordSequence.length - 1 && <span className="ml-2 text-white/30">-</span>}
+            </span>
+          ))}
+        </div>
       </div>
       <canvas
         ref={canvasRef}
