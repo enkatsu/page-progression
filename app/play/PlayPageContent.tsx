@@ -38,8 +38,9 @@ export default function PlayPageContent() {
       const newTapCount = tapCountRef.current + 1;
       tapCountRef.current = newTapCount;
 
-      // 最大タップ回数に達した場合は遷移
-      if (newTapCount === 7) {
+      // タップ回数が7以上かつコードが"I"で始まる（トニック）場合は遷移
+      const isTonicChord = option.chord.startsWith("I");
+      if (newTapCount >= 7 && isTonicChord) {
         router.push("/playback");
         return;
       }
