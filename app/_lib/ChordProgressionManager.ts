@@ -34,6 +34,22 @@ export class ChordProgressionManager {
     }));
   }
 
+  // 全てのトニックコード（I, iii, vi）を取得
+  getAllTonicChords(): NextChordOption[] {
+    const tonicChords = this.data.nodes
+      .filter(node =>
+        node.id.startsWith("I") ||
+        node.id.startsWith("iii") ||
+        node.id.startsWith("vi")
+      )
+      .map(node => ({
+        chord: node.id,
+        weight: 0.5 // デフォルトの重み
+      }));
+
+    return tonicChords;
+  }
+
   // 指定されたコードに遷移
   transitionTo(chord: string): void {
     this.currentChord = chord;

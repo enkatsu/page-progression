@@ -45,8 +45,23 @@ export default function PlayPageContent() {
         return;
       }
 
-      // 新しい次の候補を取得してBlobを更新
-      const newNextChordOptions = chordManager.getNextChordOptions();
+      // 新しい次の候補を取得
+      let newNextChordOptions = chordManager.getNextChordOptions();
+
+      // 7回目（次が最後）の場合は、トニックコードのみにフィルタリング
+      if (newTapCount === 6) {
+        const tonicOptions = newNextChordOptions.filter(opt => isTonicChord(opt.chord));
+
+        if (tonicOptions.length > 0) {
+          // 現在のコードから遷移可能なトニックコードがある場合
+          newNextChordOptions = tonicOptions;
+        } else {
+          // トニックコードへの遷移がない場合は、全てのトニックコードを表示
+          newNextChordOptions = chordManager.getAllTonicChords();
+        }
+      }
+
+      // Blobを更新
       if (createBlobsRef.current) {
         createBlobsRef.current(newNextChordOptions, blob);
       }
