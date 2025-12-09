@@ -7,6 +7,7 @@ import { Blob } from "../_lib/Blob";
 import { ChordProgressionManager } from "../_lib/ChordProgressionManager";
 import { BlobPositioner } from "../_lib/BlobPositioner";
 import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
+import { isTonicChord } from "../_lib/chordFunction";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
 import jazzData from "../_data/jazz.json";
 import { COLORS, BLOB_CONFIG, BLOB_MARGIN } from "../_constants/theme";
@@ -38,9 +39,8 @@ export default function PlayPageContent() {
       const newTapCount = tapCountRef.current + 1;
       tapCountRef.current = newTapCount;
 
-      // タップ回数が7以上かつコードが"I"で始まる（トニック）場合は遷移
-      const isTonicChord = option.chord.startsWith("I");
-      if (newTapCount >= 7 && isTonicChord) {
+      // タップ回数が7以上かつトニックコード（I, iii, vi）の場合は遷移
+      if (newTapCount >= 7 && isTonicChord(option.chord)) {
         router.push("/playback");
         return;
       }
