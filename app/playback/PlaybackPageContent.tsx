@@ -187,7 +187,10 @@ export default function PlaybackPageContent() {
 
   const getShareUrl = () => {
     const chordsParam = chordSequence.join(",");
-    return `${window.location.origin}/playback?chords=${encodeURIComponent(chordsParam)}`;
+    // 現在のページのURL（クエリパラメータを除く）を使用
+    const url = new URL(window.location.href);
+    url.search = `?chords=${encodeURIComponent(chordsParam)}`;
+    return url.toString();
   };
 
   const handleReplay = () => {
