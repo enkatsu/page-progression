@@ -6,6 +6,7 @@ import paper from "paper";
 import { Blob } from "../_lib/Blob";
 import { ChordProgressionManager } from "../_lib/ChordProgressionManager";
 import { BlobPositioner } from "../_lib/BlobPositioner";
+import { ChordPlayer } from "../_lib/ChordPlayer";
 import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
 import { isTonicChord } from "../_lib/chordFunction";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
@@ -23,11 +24,19 @@ export default function PlayPageContent() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const blobsRef = useRef<Blob[]>([]);
   const chordManagerRef = useRef<ChordProgressionManager>(initialChordManager);
+  const chordPlayerRef = useRef<ChordPlayer | null>(null);
   const createBlobsRef = useRef<((options: NextChordOption[], expandingBlob?: Blob) => void) | null>(null);
   const tapCountRef = useRef<number>(0);
 
   // Blobタップ時の処理
   const handleBlobTap = useCallback((option: NextChordOption, blob: Blob) => {
+    // タップ時に音を鳴らす
+    if (chordPlayerRef.current) {
+      chordPlayerRef.current.playChord(option.chord).catch(err => {
+        console.error("Error playing chord on tap:", err);
+      });
+    }
+
     blob.startExpanding(() => {
       // 拡大完了時の処理
       const chordManager = chordManagerRef.current;
@@ -133,6 +142,11 @@ export default function PlayPageContent() {
     // Paper.jsのセットアップ
     setupPaperCanvas(canvas);
 
+    // ChordPlayerを作成（初回のみ）
+    if (!chordPlayerRef.current) {
+      chordPlayerRef.current = new ChordPlayer();
+    }
+
     // コード進行マネージャーを取得
     const chordManager = chordManagerRef.current;
 
@@ -165,6 +179,15 @@ export default function PlayPageContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // コンポーネントのアンマウント時のみChordPlayerを破棄
+  useEffect(() => {
+    return () => {
+      if (chordPlayerRef.current) {
+        chordPlayerRef.current.dispose();
+        chordPlayerRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <main className="w-screen h-screen overflow-hidden">
