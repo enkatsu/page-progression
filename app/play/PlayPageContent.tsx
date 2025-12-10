@@ -10,7 +10,7 @@ import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
 import { isTonicChord } from "../_lib/chordFunction";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
 import jazzData from "../_data/jazz.json";
-import { COLORS, BLOB_CONFIG, BLOB_MARGIN } from "../_constants/theme";
+import { COLORS, BLOB_CONFIG, BLOB_MARGIN, PROGRESSION_CONFIG } from "../_constants/theme";
 import { NextChordOption } from "../_types/ChordProgression";
 
 // コード進行マネージャーをコンポーネント外で初期化
@@ -39,8 +39,8 @@ export default function PlayPageContent() {
       const newTapCount = tapCountRef.current + 1;
       tapCountRef.current = newTapCount;
 
-      // タップ回数が7以上かつトニックコード（I, iii, vi）の場合は遷移
-      if (newTapCount >= 7 && isTonicChord(option.chord)) {
+      // タップ回数が最大コード数に達しかつトニックコード（I, iii, vi）の場合は遷移
+      if (newTapCount >= PROGRESSION_CONFIG.maxChordCount && isTonicChord(option.chord)) {
         router.push("/playback");
         return;
       }
@@ -48,8 +48,8 @@ export default function PlayPageContent() {
       // 新しい次の候補を取得
       let newNextChordOptions = chordManager.getNextChordOptions();
 
-      // 7回目（次が最後）の場合は、トニックコードのみにフィルタリング
-      if (newTapCount === 6) {
+      // 最後のコード選択前（最大コード数 - 1）の場合は、トニックコードのみにフィルタリング
+      if (newTapCount === PROGRESSION_CONFIG.maxChordCount - 1) {
         const tonicOptions = newNextChordOptions.filter(opt => isTonicChord(opt.chord));
 
         if (tonicOptions.length > 0) {

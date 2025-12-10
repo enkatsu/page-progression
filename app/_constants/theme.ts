@@ -22,3 +22,8 @@ export const PLAYBACK_CONFIG = {
 
 // マージンの計算（Blobが画面端に配置されないように）
 export const BLOB_MARGIN = BLOB_CONFIG.maxRadius + 20;
+
+// コード進行の設定
+export const PROGRESSION_CONFIG = {
+  maxChordCount: 7, // 最大コード数（この数に達するとTコードで終了）
+} as const;
