@@ -14,7 +14,6 @@ import jazzData from "../_data/jazz.json";
 import { COLORS, BLOB_CONFIG, BLOB_MARGIN, PROGRESSION_CONFIG } from "../_constants/theme";
 import { NextChordOption } from "../_types/ChordProgression";
 
-// コード進行マネージャーをコンポーネント外で初期化
 const initialChordManager = new ChordProgressionManager(jazzData);
 const initialChord = initialChordManager.getCurrentChord();
 
@@ -28,9 +27,7 @@ export default function PlayPageContent() {
   const createBlobsRef = useRef<((options: NextChordOption[], expandingBlob?: Blob) => void) | null>(null);
   const tapCountRef = useRef<number>(0);
 
-  // Blobタップ時の処理
   const handleBlobTap = useCallback((option: NextChordOption, blob: Blob) => {
-    // タップ時に音を鳴らす
     if (chordPlayerRef.current) {
       chordPlayerRef.current.playChord(option.chord).catch(err => {
         console.error("Error playing chord on tap:", err);
@@ -38,48 +35,37 @@ export default function PlayPageContent() {
     }
 
     blob.startExpanding(() => {
-      // 拡大完了時の処理
       const chordManager = chordManagerRef.current;
-
-      // コード進行を更新
       chordManager.transitionTo(option.chord);
       addChord(option.chord);
 
       const newTapCount = tapCountRef.current + 1;
       tapCountRef.current = newTapCount;
 
-      // タップ回数が最大コード数に達しかつトニックコード（I, iii, vi）の場合は遷移
       if (newTapCount >= PROGRESSION_CONFIG.maxChordCount && isTonicChord(option.chord)) {
         router.push("/playback");
         return;
       }
 
-      // 新しい次の候補を取得
       let newNextChordOptions = chordManager.getNextChordOptions();
 
-      // 最後のコード選択前（最大コード数 - 1）の場合は、トニックコードのみにフィルタリング
       if (newTapCount === PROGRESSION_CONFIG.maxChordCount - 1) {
         const tonicOptions = newNextChordOptions.filter(opt => isTonicChord(opt.chord));
 
         if (tonicOptions.length > 0) {
-          // 現在のコードから遷移可能なトニックコードがある場合
           newNextChordOptions = tonicOptions;
         } else {
-          // トニックコードへの遷移がない場合は、全てのトニックコードを表示
           newNextChordOptions = chordManager.getAllTonicChords();
         }
       }
 
-      // Blobを更新
       if (createBlobsRef.current) {
         createBlobsRef.current(newNextChordOptions, blob);
       }
     });
   }, [router, addChord]);
 
-  // Blobを作成する関数
   const createBlobs = useCallback((nextChordOptions: NextChordOption[], expandingBlob?: Blob) => {
-    // 既存のBlobを削除（拡大中のBlobは除く）
     blobsRef.current.forEach((blob) => {
       if (blob !== expandingBlob) {
         blob.remove();
@@ -89,22 +75,17 @@ export default function PlayPageContent() {
     const width = paper.view.viewSize.width;
     const height = paper.view.viewSize.height;
 
-    // BlobPositionerを使用して位置管理
     const positioner = new BlobPositioner(width, height, BLOB_MARGIN);
 
-    // Blobの半径は遷移確率（重み）に基づいて決定
     const minRadius = BLOB_CONFIG.minRadius;
     const maxRadius = BLOB_CONFIG.maxRadius;
 
     const blobs: Blob[] = [];
 
-    // 各次コード候補をBlobとして配置
     nextChordOptions.forEach((option, i) => {
-      // 重みに基づいて半径を決定（重みが大きいほど大きいBlob）
       const radius = minRadius + (option.weight * (maxRadius - minRadius));
       const { x, y } = positioner.findNonOverlappingPosition(radius);
 
-      // 位置を記録
       positioner.addPosition(x, y, radius);
 
       const blob = new Blob({
@@ -121,7 +102,6 @@ export default function PlayPageContent() {
       blobs.push(blob);
     });
 
-    // 拡大中のBlobがある場合は配列に含める（フェードアウト完了まで更新を続けるため）
     if (expandingBlob) {
       blobs.push(expandingBlob);
     }
@@ -129,7 +109,6 @@ export default function PlayPageContent() {
     blobsRef.current = blobs;
   }, [handleBlobTap]);
 
-  // createBlobsをrefに保存
   useEffect(() => {
     createBlobsRef.current = createBlobs;
   }, [createBlobs]);
@@ -139,31 +118,23 @@ export default function PlayPageContent() {
 
     const canvas = canvasRef.current;
 
-    // Paper.jsのセットアップ
     setupPaperCanvas(canvas);
 
-    // ChordPlayerを作成（初回のみ）
     if (!chordPlayerRef.current) {
       chordPlayerRef.current = new ChordPlayer();
     }
 
-    // コード進行マネージャーを取得
     const chordManager = chordManagerRef.current;
 
-    // 初期コードをコード列に追加
     resetChords();
     addChord(initialChord);
 
-    // 初期の次に遷移可能なコードを取得してBlobを作成
     const nextChordOptions = chordManager.getNextChordOptions();
     createBlobs(nextChordOptions);
 
-    // アニメーションループ
     paper.view.onFrame = () => {
-      // 全てのBlobを更新
       blobsRef.current.forEach((blob) => blob.update());
 
-      // 衝突判定
       for (let i = 0; i < blobsRef.current.length; i++) {
         for (let j = i + 1; j < blobsRef.current.length; j++) {
           blobsRef.current[i].checkCollision(blobsRef.current[j]);
@@ -172,14 +143,12 @@ export default function PlayPageContent() {
     };
 
     return () => {
-      // クリーンアップ
       blobsRef.current.forEach((blob) => blob.remove());
       cleanupPaperCanvas();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // コンポーネントのアンマウント時のみChordPlayerを破棄
   useEffect(() => {
     return () => {
       if (chordPlayerRef.current) {

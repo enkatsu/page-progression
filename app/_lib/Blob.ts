@@ -134,10 +134,6 @@ export class Blob {
     this.updateNormalState();
   }
 
-  /**
-   * フェードアウト時の更新処理
-   * @returns 
-   */
   private updateFadeOut() {
     this.fadeProgress += this.fadeSpeed;
 
@@ -156,9 +152,6 @@ export class Blob {
     }
   }
 
-  /**
-   * 拡大中の更新処理
-   */
   private updateExpanding() {
     this.expandProgress += this.expandSpeed;
 
@@ -196,9 +189,6 @@ export class Blob {
     this.updateWobbleAnimation();
   }
 
-  /**
-   * 物理演算の更新
-   */
   private updatePhysics() {
     this.time += this.speed;
     this.velocityY += this.gravity;
@@ -208,9 +198,6 @@ export class Blob {
     this.y += this.velocityY;
   }
 
-  /**
-   * 境界衝突のチェック
-   */
   private checkBoundaryCollision() {
     const margin = this.baseRadius;
     const restitution = -0.8;
@@ -237,9 +224,6 @@ export class Blob {
     }
   }
 
-  /**
-   * ふよふよしたアニメーションの更新
-   */
   private updateWobbleAnimation() {
     const offsetX = Math.sin(this.time) * 10;
     const offsetY = Math.cos(this.time * 1.3) * 10;
@@ -260,8 +244,7 @@ export class Blob {
 
   /**
    * 他のBlobとの衝突判定と反応
-   * @param other 
-   * @returns 
+   * @param other 衝突判定対象のBlob
    */
   checkCollision(other: Blob) {
     if (this.isExpanding || this.isFadingOut || other.isExpanding || other.isFadingOut) {
