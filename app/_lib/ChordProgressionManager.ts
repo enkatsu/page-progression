@@ -44,7 +44,7 @@ export class ChordProgressionManager {
       )
       .map(node => ({
         chord: node.id,
-        weight: 0.5 // デフォルトの重み
+        weight: 0.2 // デフォルトの重み
       }));
 
     return tonicChords;
