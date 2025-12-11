@@ -36,8 +36,8 @@ export class Blob {
     this.color = config.color;
     this.canvasWidth = config.canvasWidth;
     this.canvasHeight = config.canvasHeight;
-    this.time = Math.random() * Math.PI * 2; // ランダムな開始位置
-    this.speed = 0.02 + Math.random() * 0.03; // ランダムな速度
+    this.time = Math.random() * Math.PI * 2;
+    this.speed = 0.02 + Math.random() * 0.03;
     this.velocityX = 0;
     this.velocityY = 0;
     this.gravity = config.gravity ?? 0;
@@ -50,12 +50,10 @@ export class Blob {
     this.fadeProgress = 0;
     this.fadeSpeed = BLOB_CONFIG.fadeSpeed;
 
-    // Pathを作成
     const points = 8;
     this.path = new paper.Path();
     this.path.closed = true;
 
-    // 不規則な円（Blob）を作成
     for (let i = 0; i < points; i++) {
       const angle = (i / points) * Math.PI * 2;
       const randomRadius = config.radius + Math.random() * 20 - 10;
@@ -67,7 +65,6 @@ export class Blob {
     this.path.smooth();
     this.path.fillColor = new paper.Color(config.color);
 
-    // ラベルを作成（中央に配置）
     this.label = new paper.PointText(new paper.Point(config.x, config.y));
     this.label.content = config.label;
     this.label.fontSize = Math.max(16, config.radius * 0.4);
@@ -75,9 +72,7 @@ export class Blob {
     this.label.fontWeight = 'bold';
     this.label.justification = 'center';
 
-    // タップイベント（PathとLabelの両方に設定）
     this.path.onMouseDown = () => {
-      // 拡大中またはフェードアウト中はクリックを無視
       if (this.isExpanding || this.isFadingOut) {
         return;
       }
@@ -85,16 +80,13 @@ export class Blob {
     };
 
     this.label.onMouseDown = () => {
-      // 拡大中またはフェードアウト中はクリックを無視
       if (this.isExpanding || this.isFadingOut) {
         return;
       }
       config.onTap();
     };
 
-    // マウスオーバーでカーソルをポインターに（PathとLabelの両方に設定）
     this.path.onMouseEnter = () => {
-      // 拡大中またはフェードアウト中はカーソルを変更しない
       if (this.isExpanding || this.isFadingOut) {
         return;
       }
@@ -102,14 +94,12 @@ export class Blob {
     };
 
     this.label.onMouseEnter = () => {
-      // 拡大中またはフェードアウト中はカーソルを変更しない
       if (this.isExpanding || this.isFadingOut) {
         return;
       }
       document.body.style.cursor = 'pointer';
     };
 
-    // マウスアウトでカーソルを元に戻す（PathとLabelの両方に設定）
     this.path.onMouseLeave = () => {
       document.body.style.cursor = 'default';
     };
@@ -119,21 +109,17 @@ export class Blob {
     };
   }
 
-  // 拡大アニメーション開始
   startExpanding(onComplete?: () => void) {
     this.isExpanding = true;
     this.expandProgress = 0;
     this.onExpandComplete = onComplete;
-    // 拡大中は重力と速度をリセット
     this.gravity = 0;
     this.velocityX = 0;
     this.velocityY = 0;
-    // Blobを最前面に移動
     this.path.bringToFront();
     this.label.bringToFront();
   }
 
-  // アニメーション更新（メインループから呼ばれる）
   update() {
     if (this.isFadingOut) {
       this.updateFadeOut();
@@ -148,7 +134,10 @@ export class Blob {
     this.updateNormalState();
   }
 
-  // フェードアウトアニメーション更新
+  /**
+   * フェードアウト時の更新処理
+   * @returns 
+   */
   private updateFadeOut() {
     this.fadeProgress += this.fadeSpeed;
 
@@ -158,7 +147,6 @@ export class Blob {
       return;
     }
 
-    // PathとLabelの透明度を更新
     const opacity = 1 - this.fadeProgress;
     if (this.path.fillColor) {
       this.path.fillColor.alpha = opacity;
@@ -168,7 +156,9 @@ export class Blob {
     }
   }
 
-  // 拡大アニメーション更新
+  /**
+   * 拡大中の更新処理
+   */
   private updateExpanding() {
     this.expandProgress += this.expandSpeed;
 
@@ -176,22 +166,17 @@ export class Blob {
       this.expandProgress = 1;
       this.isExpanding = false;
       this.isFadingOut = true;
-      // 拡大完了時にコールバックを実行
       if (this.onExpandComplete) {
         this.onExpandComplete();
         this.onExpandComplete = undefined;
       }
     }
 
-    // 画面全体に広がるように計算
     const maxDimension = Math.max(this.canvasWidth, this.canvasHeight);
     const targetRadius = maxDimension * 1.5;
-
-    // イージング（easeInQuad）
     const eased = this.expandProgress * this.expandProgress;
     const radius = this.baseRadius + (targetRadius - this.baseRadius) * eased;
 
-    // パスの各セグメントを更新
     const points = this.path.segments.length;
     for (let i = 0; i < points; i++) {
       const angle = (i / points) * Math.PI * 2;
@@ -201,58 +186,50 @@ export class Blob {
     }
     this.path.smooth();
 
-    // ラベルをフェードアウト
     this.label.opacity = 1 - this.expandProgress;
     this.label.position = new paper.Point(this.x, this.y);
   }
 
-  // 通常状態の更新
   private updateNormalState() {
     this.updatePhysics();
     this.checkBoundaryCollision();
     this.updateWobbleAnimation();
   }
 
-  // 物理演算（時間、重力、摩擦、位置）を更新
+  /**
+   * 物理演算の更新
+   */
   private updatePhysics() {
     this.time += this.speed;
-
-    // 重力を適用
     this.velocityY += this.gravity;
-
-    // 速度を減衰させる（摩擦）
     this.velocityX *= 0.98;
     this.velocityY *= 0.98;
-
-    // 位置を更新
     this.x += this.velocityX;
     this.y += this.velocityY;
   }
 
-  // 画面端との衝突判定
+  /**
+   * 境界衝突のチェック
+   */
   private checkBoundaryCollision() {
     const margin = this.baseRadius;
+    const restitution = -0.8;
 
-    // 左端
     if (this.x - margin < 0) {
       this.x = margin;
-      this.velocityX *= -0.8;
+      this.velocityX *= restitution;
     }
-    // 右端
     if (this.x + margin > this.canvasWidth) {
       this.x = this.canvasWidth - margin;
-      this.velocityX *= -0.8;
+      this.velocityX *= restitution;
     }
-    // 上端
     if (this.y - margin < 0) {
       this.y = margin;
-      this.velocityY *= -0.8;
+      this.velocityY *= restitution;
     }
-    // 下端
     if (this.y + margin > this.canvasHeight) {
       this.y = this.canvasHeight - margin;
-      this.velocityY *= -0.8;
-      // 下端に衝突したときのコールバックを呼び出す
+      this.velocityY *= restitution;
       if (this.onBottomCollision) {
         this.onBottomCollision();
         this.onBottomCollision = undefined;
@@ -260,13 +237,13 @@ export class Blob {
     }
   }
 
-  // ふよふよアニメーション（形状変形とラベル位置更新）
+  /**
+   * ふよふよしたアニメーションの更新
+   */
   private updateWobbleAnimation() {
-    // ふよふよと動く
     const offsetX = Math.sin(this.time) * 10;
     const offsetY = Math.cos(this.time * 1.3) * 10;
 
-    // パスの各セグメントを更新
     const points = this.path.segments.length;
     for (let i = 0; i < points; i++) {
       const angle = (i / points) * Math.PI * 2;
@@ -278,14 +255,15 @@ export class Blob {
     }
 
     this.path.smooth();
-
-    // ラベルの位置も更新
     this.label.position = new paper.Point(this.x + offsetX, this.y + offsetY);
   }
 
-  // 他のBlobとの衝突判定
+  /**
+   * 他のBlobとの衝突判定と反応
+   * @param other 
+   * @returns 
+   */
   checkCollision(other: Blob) {
-    // 拡大中またはフェードアウト中のBlobは衝突判定をスキップ
     if (this.isExpanding || this.isFadingOut || other.isExpanding || other.isFadingOut) {
       return;
     }
@@ -296,16 +274,12 @@ export class Blob {
     const minDistance = this.baseRadius + other.baseRadius;
 
     if (distance < minDistance) {
-      // 衝突している場合
       const angle = Math.atan2(dy, dx);
       const targetX = this.x + Math.cos(angle) * minDistance;
       const targetY = this.y + Math.sin(angle) * minDistance;
-
-      // 位置を補正
       const ax = (targetX - other.x) * 0.05;
       const ay = (targetY - other.y) * 0.05;
 
-      // 速度を反映（弾性衝突）
       this.velocityX -= ax;
       this.velocityY -= ay;
       other.velocityX += ax;
@@ -313,7 +287,6 @@ export class Blob {
     }
   }
 
-  // Blobを削除
   remove() {
     this.path.remove();
     this.label.remove();
