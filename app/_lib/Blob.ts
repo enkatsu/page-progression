@@ -1,6 +1,6 @@
 import paper from "paper";
 import { BlobConfig } from "../_types/BlobConfig";
-import { BLOB_CONFIG } from "../_constants/theme";
+import { BLOB_CONFIG, CHORD_FUNCTION_CONFIG } from "../_constants/theme";
 
 export class Blob {
   path: paper.Path;
@@ -37,7 +37,14 @@ export class Blob {
     this.canvasWidth = config.canvasWidth;
     this.canvasHeight = config.canvasHeight;
     this.time = Math.random() * Math.PI * 2;
-    this.speed = 0.02 + Math.random() * 0.03;
+
+    // 和音の機能に基づいてアニメーション速度を設定
+    const baseSpeed = 0.02 + Math.random() * 0.03;
+    const chordConfig = config.chordFunction
+      ? CHORD_FUNCTION_CONFIG[config.chordFunction]
+      : CHORD_FUNCTION_CONFIG.T;
+    this.speed = baseSpeed * chordConfig.animationSpeed;
+
     this.velocityX = 0;
     this.velocityY = 0;
     this.gravity = config.gravity ?? 0;

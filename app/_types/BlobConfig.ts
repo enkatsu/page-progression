@@ -1,3 +1,5 @@
+import { ChordFunction } from "../_lib/chordFunction";
+
 export interface BlobConfig {
   x: number;
   y: number;
@@ -9,4 +11,5 @@ export interface BlobConfig {
   onTap: () => void;
   gravity?: number;
   onBottomCollision?: () => void;
+  chordFunction?: ChordFunction | null;
 }

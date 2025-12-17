@@ -7,8 +7,9 @@ import paper from "paper";
 import { Blob } from "../_lib/Blob";
 import { ChordPlayer } from "../_lib/ChordPlayer";
 import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
+import { getChordFunction } from "../_lib/chordFunction";
 import Button from "../_components/Button";
-import { COLORS, PLAYBACK_CONFIG } from "../_constants/theme";
+import { CHORD_FUNCTION_CONFIG, PLAYBACK_CONFIG } from "../_constants/theme";
 
 export default function PlaybackPageContent() {
   const router = useRouter();
@@ -79,16 +80,23 @@ export default function PlaybackPageContent() {
       // 最後のBlobかどうか
       const isLastBlob = index === chordSequence.length - 1;
 
+      const chordFunction = getChordFunction(chord);
+      const chordConfig = chordFunction
+        ? CHORD_FUNCTION_CONFIG[chordFunction]
+        : CHORD_FUNCTION_CONFIG.T;
+      const color = chordConfig.color;
+
       const blob = new Blob({
         x,
         y,
         radius: PLAYBACK_CONFIG.blobRadius,
-        color: COLORS[index % COLORS.length],
+        color,
         canvasWidth: width,
         canvasHeight: height,
         label: chord,
         onTap: () => {}, // タップイベントなし
         gravity: 0, // 初期は重力なし（後で設定）
+        chordFunction,
         onBottomCollision: () => {
           chordPlayer.playChord(chord).catch(err => {
             console.error("Error playing chord:", err);

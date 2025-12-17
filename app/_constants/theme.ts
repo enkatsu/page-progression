@@ -1,5 +1,18 @@
-// カラーパレット
-export const COLORS = ["#FD6F00", "#FF2C62", "#6842FF", "#00D9FF", "#FFD700"] as const;
+// 和音機能に関する設定の集約
+export const CHORD_FUNCTION_CONFIG = {
+  T: {
+    color: '#FD6F00', // オレンジ - 安定した響き
+    animationSpeed: 0.4, // 最遅 - 落ち着いた動き
+  },
+  SD: {
+    color: '#FF2C62', // マゼンタ - やや不安定、前進感
+    animationSpeed: 0.7, // 中間 - やや活発な動き
+  },
+  D: {
+    color: '#6842FF', // パープル - 緊張感、解決を求める響き
+    animationSpeed: 1.0, // 最速 - 活発な動き
+  },
+} as const;
 
 // Blob設定
 export const BLOB_CONFIG = {

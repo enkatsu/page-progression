@@ -8,10 +8,10 @@ import { ChordProgressionManager } from "../_lib/ChordProgressionManager";
 import { BlobPositioner } from "../_lib/BlobPositioner";
 import { ChordPlayer } from "../_lib/ChordPlayer";
 import { setupPaperCanvas, cleanupPaperCanvas } from "../_lib/paperUtils";
-import { isTonicChord } from "../_lib/chordFunction";
+import { isTonicChord, getChordFunction } from "../_lib/chordFunction";
 import { useChordProgression } from "../_contexts/ChordProgressionContext";
 import jazzData from "../_data/jazz.json";
-import { COLORS, BLOB_CONFIG, BLOB_MARGIN, PROGRESSION_CONFIG } from "../_constants/theme";
+import { CHORD_FUNCTION_CONFIG, BLOB_CONFIG, BLOB_MARGIN, PROGRESSION_CONFIG } from "../_constants/theme";
 import { NextChordOption } from "../_types/ChordProgression";
 
 const initialChordManager = new ChordProgressionManager(jazzData);
@@ -82,22 +82,29 @@ export default function PlayPageContent() {
 
     const blobs: Blob[] = [];
 
-    nextChordOptions.forEach((option, i) => {
+    nextChordOptions.forEach((option) => {
       const radius = minRadius + (option.weight * (maxRadius - minRadius));
       const { x, y } = positioner.findNonOverlappingPosition(radius);
 
       positioner.addPosition(x, y, radius);
 
+      const chordFunction = getChordFunction(option.chord);
+      const chordConfig = chordFunction
+        ? CHORD_FUNCTION_CONFIG[chordFunction]
+        : CHORD_FUNCTION_CONFIG.T;
+      const color = chordConfig.color;
+
       const blob = new Blob({
         x,
         y,
         radius,
-        color: COLORS[i % COLORS.length],
+        color,
         canvasWidth: width,
         canvasHeight: height,
         label: option.chord,
         onTap: () => handleBlobTap(option, blob),
         gravity: 0,
+        chordFunction,
       });
       blobs.push(blob);
     });
